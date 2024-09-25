@@ -1,48 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Epic Task</title>
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
-    >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Epic Cars</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        h1.title {
+            text-align: center;
+            margin-top: 2rem;
+            color: #4a4a4a;
+        }
+
+        .button.is-success {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
+
 <body class="container">
 
-    <h1 class="title">Tarefas Pendentes</h1>
+    <h1 class="title">Carros Disponíveis</h1>
 
-    <button class="button is-success mb-4">
-        <span class="icon is-small">
-          <i class="fas fa-plus"></i>
-        </span>
-        <span>Nova Tarefa</span>
-    </button>
+    <form th:action="@{/cars}" method="post">
+        <div class="field">
+            <label class="label">Marca</label>
+            <div class="control">
+                <input class="input" type="text" name="brand" placeholder="Marca do carro" required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Modelo</label>
+            <div class="control">
+                <input class="input" type="text" name="model" placeholder="Modelo do carro" required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Ano</label>
+            <div class="control">
+                <input class="input" type="number" name="year" placeholder="Ano do carro" min="1886" max="2024"
+                    required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Preço</label>
+            <div class="control">
+                <input class="input" type="number" name="price" placeholder="Preço do carro" min="0" step="0.01"
+                    required>
+            </div>
+        </div>
+        <button class="button is-success" type="submit">Adicionar Carro</button>
+    </form>
 
     <section class="grid is-col-min-10">
-        <div class="card cell has-background-grey-dark" th:each="task: ${tasks}">
-            <header class="card-header has-background-primary">
-                <p class="card-header-title" th:text="${task.title}"></p>
-                <span class="tag is-warning" th:text="${task.score} + pts"></span>
-            </header>
+        <div class="columns is-multiline">
+            <div class="column is-one-third" th:each="car : ${cars}">
+                <div class="card has-background-grey-dark">
+                    <header class="card-header has-background-primary">
+                        <p class="card-header-title" th:text="${car.brand} + ' ' + ${car.model}"></p>
+                        <span class="tag is-warning" th:text="${car.price} + ' R$'"></span>
+                    </header>
 
-            <div class="card-content">
-                <div class="content" th:text="${task.description}"></div>
-                <progress class="progress is-primary" th:value="${task.status}" max="100"></progress>
+                    <div class="card-content">
+                        <div class="content" th:text="'Ano: ' + ${car.year}"></div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <form th:action="@{/cars/delete/{id}(id=${car.id})}" method="post">
+                            <button class="button is-danger is-outlined" type="submit" aria-label="Apagar carro">
+                                <span>Apagar</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            </button>
+                        </form>
+                    </footer>
+                </div>
             </div>
-
-            <footer class="card-footer">
-                <button class="button is-danger is-outlined">
-                    <span>Apagar</span>
-                    <span class="icon is-small">
-                      <i class="fas fa-times"></i>
-                    </span>
-                </button>
-            </footer>
         </div>
     </section>
 
-
 </body>
+
 </html>
